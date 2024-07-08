@@ -3,6 +3,7 @@ import WandIcon from '../../assets/magic-wand.svg?react';
 import { Field } from '../../components/Field/Field';
 import { useStore } from '../../store/store';
 import { useEffect } from 'react';
+import { Loader } from '../../components/Loader/Loader';
 
 export const Ticket = () => {
   const {
@@ -16,6 +17,8 @@ export const Ticket = () => {
     isOnResultScreen,
     hasError,
     sendTicket,
+    isLoading,
+    toggleLoading,
   } = useStore();
 
   useEffect(() => {
@@ -42,9 +45,11 @@ export const Ticket = () => {
     generateWinningNumbers();
   }, []);
 
-  const submitResults = () => {
+  const submitResults = async () => {
+    toggleLoading(true);
     showResults();
-    sendTicket();
+    await sendTicket();
+    toggleLoading(false);
   };
 
   if (hasError) {
@@ -59,44 +64,47 @@ export const Ticket = () => {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <header className={styles.header}>
-        <h1 className={styles.header__title}>Билет 1</h1>
-        {!isOnResultScreen && (
-          <button onClick={randomlySelectNumbers}>
-            <WandIcon />
-          </button>
-        )}
-      </header>
-      {isOnResultScreen ? (
-        <>
-          {isTicketWon ? (
-            <span>Ого, вы выиграли! Поздравляем!</span>
-          ) : (
-            <span>Ого, вы не выиграли! Не поздравляем!</span>
-          )}
-        </>
-      ) : (
-        <>
-          <div className={styles.fieldOne}>
-            <Field title="Поле 1" field={fieldOne} />
-          </div>
-          <div className={styles.fieldTwo}>
-            <Field title="Поле 2" field={fieldTwo} />
-          </div>
-          <div className={styles.btnWrapper}>
-            <button
-              disabled={
-                fieldOne.selectedNumbers.length !== fieldOne.numbersToSelect ||
-                fieldTwo.selectedNumbers.length !== fieldTwo.numbersToSelect
-              }
-              onClick={submitResults}
-            >
-              Показать результаты
+    <>
+      <div className={styles.wrapper}>
+        <header className={styles.header}>
+          <h1 className={styles.header__title}>Билет 1</h1>
+          {!isOnResultScreen && (
+            <button onClick={randomlySelectNumbers}>
+              <WandIcon />
             </button>
-          </div>
-        </>
-      )}
-    </div>
+          )}
+        </header>
+        {isOnResultScreen ? (
+          <>
+            {isTicketWon ? (
+              <span>Ого, вы выиграли! Поздравляем!</span>
+            ) : (
+              <span>Ого, вы не выиграли! Не поздравляем!</span>
+            )}
+          </>
+        ) : (
+          <>
+            <div className={styles.fieldOne}>
+              <Field title="Поле 1" field={fieldOne} />
+            </div>
+            <div className={styles.fieldTwo}>
+              <Field title="Поле 2" field={fieldTwo} />
+            </div>
+            <div className={styles.btnWrapper}>
+              <button
+                disabled={
+                  fieldOne.selectedNumbers.length !== fieldOne.numbersToSelect ||
+                  fieldTwo.selectedNumbers.length !== fieldTwo.numbersToSelect
+                }
+                onClick={submitResults}
+              >
+                Показать результаты
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+      {isLoading && <Loader />}
+    </>
   );
 };

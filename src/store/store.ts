@@ -13,6 +13,7 @@ export type Field = {
 };
 
 interface Store {
+  isLoading: boolean;
   fieldOne: Field;
   fieldTwo: Field;
   winningNumbers: {
@@ -28,6 +29,7 @@ interface Store {
   toggleAbilityToSelect: (fieldNum: number, available: boolean) => void;
   showResults: () => void;
   sendTicket: () => void;
+  toggleLoading: (flag: boolean) => void;
 }
 
 export const useStore = create<Store, [['zustand/immer', never]]>(
@@ -39,6 +41,7 @@ export const useStore = create<Store, [['zustand/immer', never]]>(
     isTicketWon: false,
     isOnResultScreen: false,
     hasError: false,
+    isLoading: false,
     fieldOne: {
       availableToSelect: true,
       numbersToSelect: 8,
@@ -186,6 +189,12 @@ export const useStore = create<Store, [['zustand/immer', never]]>(
         state.isTicketWon =
           fieldOneInterceptionArray.length >= 4 ||
           (fieldOneInterceptionArray.length >= 3 && fieldTwoInterceptionArray.length > 0);
+      });
+    },
+
+    toggleLoading: (flag: boolean) => {
+      return set((state) => {
+        state.isLoading = flag;
       });
     },
 

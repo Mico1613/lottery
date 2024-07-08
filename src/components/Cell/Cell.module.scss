@@ -1,0 +1,34 @@
+.cell {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+
+  &_notAvailableToSelect {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &_selected {
+    display: grid;
+    place-content: center;
+    border: none;
+  }
+
+  &__content {
+    display: grid;
+    place-content: center;
+    width: 100%;
+    height: 100%;
+
+    &_selected {
+      width: 34px;
+      height: 34px;
+      background-color: #ffd205;
+      border-radius: 5px;
+    }
+  }
+}
